@@ -65,7 +65,7 @@
                 "WorkingDir": "/root/deepstream_sdk_v4.0_jetson/sources/apps/sample_apps/deepstream-test4",
                 "Entrypoint": [
                   "/opt/nvidia/deepstream/deepstream-4.0/bin/deepstream-test4-app",
-                  "-i",
+                  "--input-file",
                   "/root/deepstream_sdk_v4.0_jetson/samples/streams/sample_720p.h264",
                   "--proto-lib",
                   "/opt/nvidia/deepstream/deepstream-4.0/lib/libnvds_azure_edge_proto.so",
