@@ -1,0 +1,96 @@
+{
+  "$schema-template": "2.0.0",
+  "modulesContent": {
+    "$edgeAgent": {
+      "properties.desired": {
+        "schemaVersion": "1.0",
+        "runtime": {
+          "type": "docker",
+          "settings": {
+            "minDockerVersion": "v1.25",
+            "loggingOptions": "",
+            "registryCredentials": {}
+          }
+        },
+        "systemModules": {
+          "edgeAgent": {
+            "type": "docker",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-agent:1.0",
+              "createOptions": {}
+            }
+          },
+          "edgeHub": {
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-hub:1.0",
+              "createOptions": {
+                "HostConfig": {
+                  "PortBindings": {
+                    "5671/tcp": [
+                      {
+                        "HostPort": "5671"
+                      }
+                    ],
+                    "8883/tcp": [
+                      {
+                        "HostPort": "8883"
+                      }
+                    ],
+                    "443/tcp": [
+                      {
+                        "HostPort": "443"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "modules": {
+          "DeepStreamModule": {
+            "version": "1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "nvcr.io/nvidia/deepstream-l4t:4.0-19.07",
+              "createOptions": {
+                "HostConfig": {
+                  "Runtime": "nvidia"
+                },
+                "WorkingDir": "/root/deepstream_sdk_v4.0_jetson/sources/apps/sample_apps/deepstream-test4",
+                "Entrypoint": [
+                  "/opt/nvidia/deepstream/deepstream-4.0/bin/deepstream-test4-app",
+                  "-i",
+                  "/root/deepstream_sdk_v4.0_jetson/samples/streams/sample_720p.h264",
+                  "--proto-lib",
+                  "/opt/nvidia/deepstream/deepstream-4.0/lib/libnvds_azure_edge_proto.so",
+                  "--no-display",
+                  "--schema",
+                  "1",
+                  "--topic",
+                  "deepstream"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "$edgeHub": {
+      "properties.desired": {
+        "schemaVersion": "1.0",
+        "routes": {
+          "route": "FROM /messages/* INTO $upstream"
+        },
+        "storeAndForwardConfiguration": {
+          "timeToLiveSecs": 7200
+        }
+      }
+    }
+  }
+}
